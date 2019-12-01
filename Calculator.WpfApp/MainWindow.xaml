@@ -3,9 +3,12 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Calculator.WpfApp"
+        xmlns:local="clr-namespace:Calculator.WpfApp.ViewModel"
         mc:Ignorable="d"
-        Title="WPF_PI" Height="200" Width="500">
+        Title="WPF_PI" Height="250" Width="500">
+    <Window.DataContext>
+        <local:PiCalculatorViewModel></local:PiCalculatorViewModel>
+    </Window.DataContext>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="30"/>

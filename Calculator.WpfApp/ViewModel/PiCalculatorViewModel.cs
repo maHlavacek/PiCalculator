@@ -109,7 +109,7 @@ namespace Calculator.WpfApp.ViewModel
             }
 
             inRadius = Points.Select(p => p).Where(w => Math.Sqrt(Math.Pow(w.XCoordinate,2) + Math.Pow(w.YCoordinate,2)) <= 1).Count();
-            Result = Calculations / inRadius;
+            Result = (double) 4 * inRadius / Calculations;
         }
     }
 }
