@@ -6,8 +6,7 @@ namespace Calculator.Core.Contracts
 {
     public interface IPoint
     {
-        public int XCoordinate { get; }
-        public int YCoordinate { get; }
-
+        public double XCoordinate { get; }
+        public double YCoordinate { get; }
     }
 }

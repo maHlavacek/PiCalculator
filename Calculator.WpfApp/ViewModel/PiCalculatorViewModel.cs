@@ -1,6 +1,7 @@
 ﻿using Calculator.WpfApp.Command;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Windows.Input;
 
@@ -9,6 +10,20 @@ namespace Calculator.WpfApp.ViewModel
     class PiCalculatorViewModel : BaseViewModel
     {
         #region Properties
+        private List<Models.Point> points;
+
+        public List<Models.Point> Points
+        {
+            get { return points; }
+            set
+            {
+                points = value;
+                OnPropertyChanged(nameof(Points));
+            }
+        }
+
+
+
         private int calculations;
 
         public int Calculations
@@ -85,7 +100,16 @@ namespace Calculator.WpfApp.ViewModel
 
         private void StartCalculation(object obj)
         {
+            int inRadius = 0;
+            Points = new List<Models.Point>();
+            Random random = new Random();
+            for (int i = 0; i < Calculations; i++)
+            {
+                Points.Add(new Models.Point(random.NextDouble(), random.NextDouble()));
+            }
 
+            inRadius = Points.Select(p => p).Where(w => Math.Sqrt(Math.Pow(w.XCoordinate,2) + Math.Pow(w.YCoordinate,2)) <= 1).Count();
+            Result = Calculations / inRadius;
         }
     }
 }
