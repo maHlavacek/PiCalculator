@@ -35,6 +35,6 @@
             <TextBlock Width="100">Result:</TextBlock>
             <TextBox Width="400" Margin="1" Text="{Binding Result}"></TextBox>
         </StackPanel>
-        <Button Grid.Row="5" Margin="5">START</Button>
+        <Button Grid.Row="5" Margin="5" Command="{Binding CmdStart}">START</Button>
     </Grid>
 </Window>
