@@ -12,6 +12,8 @@ namespace Calculator.WpfApp.ViewModel
 {
     class PiCalculatorViewModel : BaseViewModel
     {
+
+
         #region Properties
 
 
@@ -92,25 +94,36 @@ namespace Calculator.WpfApp.ViewModel
 
         private async void StartCalculation(object obj)
         {
+            double piSum = 0;
             Stopwatch stopwatch = new Stopwatch();
+            List<Task<double>> tasks = new List<Task<double>>();
+
             stopwatch.Start();
 
-            int inRadius = await GeneratePointAsync();
+            for (int i = 0; i < Threads; i++)
+            {
+                tasks.Add(Task.Run(() => GeneratePointAsync(Calculations / Threads)));
+            }
+
+            foreach (var item in tasks)
+            {
+                piSum += await item;
+            }
 
             stopwatch.Stop();
             Time = stopwatch.ElapsedMilliseconds;
-            Result = (double)4 * inRadius / Calculations;
+            Result = piSum / Threads;
         }
 
 
-        private async Task<int> GeneratePointAsync()
+        private async Task<double> GeneratePointAsync(int pointsToGenerate)
         {
             Random random = new Random();
             int inCircle = 0;
             Models.Point point = new Models.Point();
             await Task.Run(() =>
             {
-                for (int i = 0; i < Calculations; i++)
+                for (int i = 0; i < pointsToGenerate; i++)
                 {
                     point.XCoordinate = random.NextDouble();
                     point.YCoordinate = random.NextDouble();
@@ -119,7 +132,7 @@ namespace Calculator.WpfApp.ViewModel
                     Progress = (i * 100) / Calculations;
                 }
             });
-            return inCircle;
+            return (double)inCircle * 4 / pointsToGenerate;
         }
     }
 }
