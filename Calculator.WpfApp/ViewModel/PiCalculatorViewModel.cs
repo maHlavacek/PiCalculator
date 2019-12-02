@@ -14,6 +14,7 @@ namespace Calculator.WpfApp.ViewModel
     {
         #region Properties
 
+
         private int calculations;
 
         public int Calculations
@@ -91,9 +92,9 @@ namespace Calculator.WpfApp.ViewModel
 
         private async void StartCalculation(object obj)
         {
-
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
+
             int inRadius = await GeneratePointAsync();
 
             stopwatch.Stop();
