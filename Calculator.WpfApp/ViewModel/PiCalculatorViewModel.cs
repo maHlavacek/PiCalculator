@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
@@ -13,7 +14,7 @@ namespace Calculator.WpfApp.ViewModel
     {
         #region Properties
         private List<Models.Point> points;
-
+        
         public List<Models.Point> Points
         {
             get { return points; }
@@ -23,7 +24,6 @@ namespace Calculator.WpfApp.ViewModel
                 OnPropertyChanged(nameof(Points));
             }
         }
-
 
 
         private int calculations;
@@ -120,17 +120,14 @@ namespace Calculator.WpfApp.ViewModel
             Random random = new Random();
             var result = new List<Models.Point>();
             List<Task> tasks = new List<Task>();
-            for (int i = 0; i < Threads; i++)
+            await Task.Run(() => 
             {
-                tasks.Add(Task.Run(() =>
+                for (int i = 0; i < Calculations; i++)
                 {
-                    for (int i = 0; i < Calculations / Threads; i++)
-                    {
-                        result.Add(new Models.Point(random.NextDouble(), random.NextDouble()));
-                    }
-                }));
-            }
-            await Task.WhenAll(tasks);
+                    result.Add(new Models.Point(random.NextDouble(), random.NextDouble()));
+                    Progress = (result.Count() * 100) / Calculations;
+                }
+            } );
             return result;
         }
     }
