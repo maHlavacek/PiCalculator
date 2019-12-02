@@ -13,18 +13,6 @@ namespace Calculator.WpfApp.ViewModel
     class PiCalculatorViewModel : BaseViewModel
     {
         #region Properties
-        private List<Models.Point> points;
-
-        public List<Models.Point> Points
-        {
-            get { return points; }
-            set
-            {
-                points = value;
-                OnPropertyChanged(nameof(Points));
-            }
-        }
-
 
         private int calculations;
 
