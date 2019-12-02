@@ -14,7 +14,7 @@ namespace Calculator.WpfApp.ViewModel
     {
         #region Properties
         private List<Models.Point> points;
-        
+
         public List<Models.Point> Points
         {
             get { return points; }
@@ -103,32 +103,34 @@ namespace Calculator.WpfApp.ViewModel
 
         private async void StartCalculation(object obj)
         {
-            int inRadius = 0;
-            Stopwatch stopwatch = new Stopwatch();
-            Points = new List<Models.Point>();
 
+            Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
-            Points = await GeneratePointsAsync();
+            int inRadius = await GeneratePointAsync();
+
             stopwatch.Stop();
             Time = stopwatch.ElapsedMilliseconds;
-            inRadius = Points.Select(p => p).Where(w => Math.Sqrt(Math.Pow(w.XCoordinate,2) + Math.Pow(w.YCoordinate,2)) <= 1).Count();
-            Result = (double) 4 * inRadius / Calculations;
+            Result = (double)4 * inRadius / Calculations;
         }
 
-        private async Task<List<Models.Point>> GeneratePointsAsync()
+
+        private async Task<int> GeneratePointAsync()
         {
             Random random = new Random();
-            var result = new List<Models.Point>();
-            List<Task> tasks = new List<Task>();
-            await Task.Run(() => 
+            int inCircle = 0;
+            Models.Point point = new Models.Point();
+            await Task.Run(() =>
             {
                 for (int i = 0; i < Calculations; i++)
                 {
-                    result.Add(new Models.Point(random.NextDouble(), random.NextDouble()));
-                    Progress = (result.Count() * 100) / Calculations;
+                    point.XCoordinate = random.NextDouble();
+                    point.YCoordinate = random.NextDouble();
+                    if (Math.Sqrt(Math.Pow(point.XCoordinate, 2) + Math.Pow(point.YCoordinate, 2)) <= 1)
+                        inCircle++;
+                    Progress = (i * 100) / Calculations;
                 }
-            } );
-            return result;
+            });
+            return inCircle;
         }
     }
 }
