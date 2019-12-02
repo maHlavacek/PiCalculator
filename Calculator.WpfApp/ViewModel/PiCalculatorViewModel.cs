@@ -1,8 +1,10 @@
 ﻿using Calculator.WpfApp.Command;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace Calculator.WpfApp.ViewModel
@@ -60,9 +62,9 @@ namespace Calculator.WpfApp.ViewModel
             }
         }
 
-        private DateTime time;
+        private double time;
 
-        public DateTime Time
+        public double Time
         {
             get { return time; }
             set
@@ -96,20 +98,40 @@ namespace Calculator.WpfApp.ViewModel
         public PiCalculatorViewModel()
         {
             CmdStart = new RelayCommand(StartCalculation);
+            Threads = 1;
         }
 
-        private void StartCalculation(object obj)
+        private async void StartCalculation(object obj)
         {
             int inRadius = 0;
+            Stopwatch stopwatch = new Stopwatch();
             Points = new List<Models.Point>();
-            Random random = new Random();
-            for (int i = 0; i < Calculations; i++)
-            {
-                Points.Add(new Models.Point(random.NextDouble(), random.NextDouble()));
-            }
 
+            stopwatch.Start();
+            Points = await GeneratePointsAsync();
+            stopwatch.Stop();
+            Time = stopwatch.ElapsedMilliseconds;
             inRadius = Points.Select(p => p).Where(w => Math.Sqrt(Math.Pow(w.XCoordinate,2) + Math.Pow(w.YCoordinate,2)) <= 1).Count();
             Result = (double) 4 * inRadius / Calculations;
+        }
+
+        private async Task<List<Models.Point>> GeneratePointsAsync()
+        {
+            Random random = new Random();
+            var result = new List<Models.Point>();
+            List<Task> tasks = new List<Task>();
+            for (int i = 0; i < Threads; i++)
+            {
+                tasks.Add(Task.Run(() =>
+                {
+                    for (int i = 0; i < Calculations / Threads; i++)
+                    {
+                        result.Add(new Models.Point(random.NextDouble(), random.NextDouble()));
+                    }
+                }));
+            }
+            await Task.WhenAll(tasks);
+            return result;
         }
     }
 }
